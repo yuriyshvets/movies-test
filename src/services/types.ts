@@ -12,3 +12,9 @@ export interface MovieDetail extends Movie {
     Production: string,
     Plot: string,
 }
+
+export interface MoviesResponse {
+    Response: string;
+    Search: Movie[];
+    totalResults: string;
+}

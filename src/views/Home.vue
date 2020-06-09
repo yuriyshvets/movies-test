@@ -1,30 +1,69 @@
 <template>
-  <div class="home">
-    URL is: {{url}}
-    <img alt="Batman logo" src="../assets/logo.png" />
-    <HelloWorld msg="Hello #TODO#, which batman movie do you want to see?" />
-    <MovieList />
+  <div class="page home">
+    <div class="main-content">
+      <Header />
+
+      <main>
+        <h1>
+          Hello, {{ userName }}!<br />
+          Which batman movie do you want to see?
+        </h1>
+
+        <Filters />
+
+        <MovieList
+          :movies="movies"
+          :total="numberOfResults"
+          :getMovies="getMoreMovies"
+          :incrementPage="incrementPage"
+        />
+      </main>
+    </div>
+
+    <Footer />
   </div>
 </template>
 
 <script>
-// @ is an alias to /src
-import HelloWorld from '@/components/HelloWorld.vue';
-import MovieList from '@/components/MovieList.vue';
+import { mapActions } from 'vuex';
+import MovieList from '../components/MovieList.vue';
+import Filters from '../components/Filters.vue';
+import Header from '../components/Header.vue';
+import Footer from '../components/Footer.vue';
 
 export default {
   name: 'Home',
   components: {
-    HelloWorld,
     MovieList,
+    Filters,
+    Header,
+    Footer,
   },
-  data() {
-    return {
-      url: '',
-    };
+  computed: {
+    userName() {
+      return this.$store.state.userModule.user.name;
+    },
+    movies() {
+      return this.$store.state.homeModule.movieList;
+    },
+    numberOfResults() {
+      return this.$store.state.homeModule.numberOfResults;
+    },
   },
-  created() {
-    this.url = process.env.API_BASE_URL;
+  async created() {
+    if (!this.movies.length) {
+      await this.getMovies();
+    }
+  },
+  methods: {
+    ...mapActions(['getMovies', 'getMoreMovies', 'incrementPage']),
   },
 };
 </script>
+
+<style lang="scss" scoped>
+h1 {
+  margin: 70px 0;
+  text-align: center;
+}
+</style>

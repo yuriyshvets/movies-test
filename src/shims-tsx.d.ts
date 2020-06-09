@@ -1,5 +1,6 @@
 import Vue, { VNode } from 'vue';
-
+import { Store as VuexStore, CommitOptions, DispatchOptions } from 'vuex';
+import Store from '@/store';
 declare global {
   namespace JSX {
     // tslint:disable no-empty-interface

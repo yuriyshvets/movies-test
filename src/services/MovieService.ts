@@ -1,5 +1,5 @@
 import axios, { AxiosInstance } from 'axios';
-import { MovieDetail } from './types';
+import { MovieDetail, MoviesResponse } from './types';
 
 class MovieService {
   private axiosInstance: AxiosInstance;
@@ -10,26 +10,24 @@ class MovieService {
     });
   }
 
-  public async getMovieList(token: string, page = 1) {
-    const result = await this.axiosInstance.get('/api/', {
+  public async getMovieList(options: object) {
+    const result = await this.axiosInstance.get<MoviesResponse>('/api/', {
       params: {
         s: 'Batman',
-        page,
-        // apikey: token,
+        ...options,
       },
     });
 
     return {
       result: result.data.Search,
-      numberOfResult: result.data.totalResults,
+      numberOfResults: +result.data.totalResults,
     };
   }
 
-  public async getSpecificMovie(token: string, id: string): Promise<MovieDetail> {
-    const result = await this.axiosInstance.get('/api/', {
+  public async getSpecificMovie(id: string) {
+    const result = await this.axiosInstance.get<MovieDetail>('/api/', {
       params: {
         i: id,
-        apikey: token,
       },
     });
 

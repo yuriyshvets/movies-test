@@ -1,41 +1,46 @@
 <template>
-  <div class="hello">
-    <MovieListItem
-      v-for="movie in movies"
-      :key="movie.imdbID"
-      :movie="movie"
-      />
+  <div>
+    <ul class="movie-list">
+      <MovieListItem v-for="movie in movies" :key="movie.imdbID" :movie="movie" />
+    </ul>
+
+    <div class="load-more" v-if="movies.length < total">
+      <button @click="handleLoadMore">Load more</button>
+    </div>
   </div>
 </template>
 
 <script lang="ts">
-import Vue from 'vue';
-import MovieService from '@/services/MovieService';
 import MovieListItem from './MovieListItem.vue';
-import { Movie } from '../services/types';
 
-export default Vue.extend({
+export default {
   name: 'MovieList',
-  data() {
-    return {
-      movies: [] as Movie[],
-    };
-  },
-  async created() {
-    await this.loadMovies();
+  props: {
+    movies: Array,
+    total: Number,
+    getMovies: Function,
+    incrementPage: Function,
   },
   methods: {
-    async loadMovies() {
-      const result = await MovieService.movieService.getMovieList(/* TODO */ '273b9080');
-      this.movies = result.result;
+    handleLoadMore() {
+      this.incrementPage();
+      this.getMovies();
     },
   },
   components: {
     MovieListItem,
   },
-});
+};
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
+<style lang="scss" scoped>
+.movie-list {
+  display: flex;
+  flex-wrap: wrap;
+  padding: 0;
+}
+.load-more {
+  display: flex;
+  justify-content: center;
+}
 </style>
